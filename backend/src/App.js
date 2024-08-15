@@ -1,25 +1,24 @@
-import logo from './logo.svg';
-import './App.css';
+const express = require('express');
+const connectDB = require('./config/database');
+const doctorRoutes = require('./routes/doctorRoutes');
+const timeSlotRoutes = require('./routes/timeSlotsRoutes')
+const authRoutes = require('./routes/authRoutes')
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
-}
+const app = express();
 
-export default App;
+
+app.use(express.json()); 
+
+
+connectDB();
+
+
+app.use('/api', doctorRoutes); 
+app.use('/api', timeSlotRoutes);
+app.get('/api',doctorRoutes)
+app.get('/api',timeSlotRoutes);
+app.use('/api', authRoutes);
+app.get('/api',authRoutes)
+
+
+module.exports = app;
