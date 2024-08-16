@@ -7,7 +7,6 @@ const { body, validationResult } = require('express-validator');
 // POST: Login user
 router.post('/login', async (req, res) => {
     const { email, password } = req.body;
-
     try {
         const existingUser = await User.findOne({ email });
         if (!existingUser) {
@@ -43,9 +42,7 @@ router.post('/register', [
     if (!errors.isEmpty()) {
         return res.status(400).json({ errors: errors.array() });
     }
-
     const { email, password, role } = req.body;
-
     try {
         const existingUser = await User.findOne({ email, password});
         if (existingUser) {

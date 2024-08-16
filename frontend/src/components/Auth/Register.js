@@ -8,6 +8,8 @@ import bgImage from '../../assets/images/login-bg.png';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import SupervisorAccountIcon from '@mui/icons-material/SupervisorAccount';
+import { Select, MenuItem } from '@mui/material';
+import { Snackbar,Alert,CircularProgress} from '@mui/material';
 
 
 const Register = () => {
@@ -17,6 +19,12 @@ const Register = () => {
     const [passwordFormatAllowed, setPasswordFormatAllowed] = useState(false);
     const [passwordConfirmationTerm,setPasswordConfirmationTerm]=useState('');
     const [passwordConfirmationAllowed,setPasswordConfirmationAllowed]=useState(false);
+    const [openSnackbar, setOpenSnackbar] = useState(false);
+    const [snackbarMessage, setSnackbarMessage] = useState('');
+    const [snackbarSeverity, setSnackbarSeverity] = useState('success');
+    const [loading, setLoading] = useState(false);
+    
+
     const navigate = useNavigate();
     const [roleTerm, setRoleTerm] = useState('');
 
@@ -39,6 +47,9 @@ const Register = () => {
         setPasswordConfirmationTerm(inputValue);
     };
 
+    const handleCloseSnackbar = () => {
+        setOpenSnackbar(false);
+      };
     
 
     const handleRegisterButton = async (e) => {
@@ -53,23 +64,49 @@ const Register = () => {
                 });
 
                 if (response.status === 201) {
+                    setSnackbarMessage('Registration Successfully');
+                    setSnackbarSeverity('success');
+                    setOpenSnackbar(true);
                     console.log("Registration successful");
+
+                    setLoading(true);
+                    setTimeout(() => {
+                    setLoading(false);
                     navigate('/login');
+                    }, 2000);
                 } else {
+                    setSnackbarMessage('Registration Failed');
+                    setSnackbarSeverity('error');
+                    setOpenSnackbar(true);
                     console.error('Failed to register');
                 }
             } catch (error) {
+                setSnackbarMessage('Registration Failed');
+                setSnackbarSeverity('error');
+                setOpenSnackbar(true);
                 console.error('An error occurred during registration:', error);
             }
         } else {
-            if (roleTerm !== 'Admin' && roleTerm !== 'Patient') {
-                console.log("Invalid role");
-            } else if (!emailFormatAllowed) {
+            if (!emailFormatAllowed) {
+                setSnackbarMessage('Invalid Email Format');
+                setSnackbarSeverity('error');
+                setOpenSnackbar(true);
                 console.log("Invalid email format");
             } else if (!passwordFormatAllowed) {
+                setSnackbarMessage('Invalid Password Format');
+                setSnackbarSeverity('error');
+                setOpenSnackbar(true);
                 console.log("Invalid password format");
-            } else {
+            } else if(!passwordConfirmationAllowed) {
+                setSnackbarMessage("Password Confirmation Doesn't match");
+                setSnackbarSeverity('error');
+                setOpenSnackbar(true);
                 console.log("Password confirmation does not match");
+            } else if  (roleTerm !== 'Admin' && roleTerm !== 'Patient') {
+                setSnackbarMessage('Invalid Role');
+                setSnackbarSeverity('error');
+                setOpenSnackbar(true);
+                console.log("Invalid role");
             }
         }
     };
@@ -118,7 +155,6 @@ const Register = () => {
                 display: 'grid',
                 alignItems: 'center',
                 justifyContent: 'center',
-                backgroundImage: `url(${bgImage})`,
                 backgroundSize: 'cover',
                 backgroundPosition: 'center',
             }}
@@ -129,9 +165,9 @@ const Register = () => {
                     position: 'relative',
                     marginInline: '1.5rem',
                     backgroundColor: 'hsla(0, 0%, 100%, .01)',
-                    border: '2px solid hsla(0, 0%, 100%, .7)',
+                    border: '2px solid ',
                     padding: '2.5rem 1rem',
-                    color: 'white',
+                    color: 'black',
                     borderRadius: '1rem',
                     backdropFilter: 'blur(16px)',
                     maxWidth: '420px',
@@ -162,7 +198,7 @@ const Register = () => {
                             gridTemplateColumns: '1fr max-content',
                             columnGap: '.75rem',
                             alignItems: 'center',
-                            border: '2px solid hsla(0, 0%, 100%, .7)',
+                            border: '2px solid ',
                             paddingInline: '1.25rem',
                             borderRadius: '4rem',
                         }}
@@ -175,9 +211,9 @@ const Register = () => {
                             sx={{
                                 width: '100%',
                                 background: 'none',
-                                color: 'white',
+                                color: 'black',
                                 '& .MuiInputBase-input': {
-                                    color: 'white',
+                                    color: 'black',
                                     padding: '1rem',
                                 },
                                 '& .MuiOutlinedInput-root': {
@@ -199,7 +235,7 @@ const Register = () => {
                             gridTemplateColumns: '1fr max-content',
                             columnGap: '.75rem',
                             alignItems: 'center',
-                            border: '2px solid hsla(0, 0%, 100%, .7)',
+                            border: '2px solid ',
                             paddingInline: '1.25rem',
                             borderRadius: '4rem',
                         }}
@@ -213,9 +249,9 @@ const Register = () => {
                             sx={{
                                 width: '100%',
                                 background: 'none',
-                                color: 'white',
+                                color: 'black',
                                 '& .MuiInputBase-input': {
-                                    color: 'white',
+                                    color: 'black',
                                     padding: '1rem',
                                 },
                                 '& .MuiOutlinedInput-root': {
@@ -235,7 +271,7 @@ const Register = () => {
                             gridTemplateColumns: '1fr max-content',
                             columnGap: '.75rem',
                             alignItems: 'center',
-                            border: '2px solid hsla(0, 0%, 100%, .7)',
+                            border: '2px solid',
                             paddingInline: '1.25rem',
                             borderRadius: '4rem',
                         }}>
@@ -248,9 +284,9 @@ const Register = () => {
                                 sx={{
                                     width: '100%',
                                     background: 'none',
-                                    color: 'white',
+                                    color: 'black',
                                     '& .MuiInputBase-input': {
-                                        color: 'white',
+                                        color: 'black',
                                         padding: '1rem',
                                     },
                                     '& .MuiOutlinedInput-root': {
@@ -269,21 +305,22 @@ const Register = () => {
                             gridTemplateColumns: '1fr max-content',
                             columnGap: '.75rem',
                             alignItems: 'center',
-                            border: '2px solid hsla(0, 0%, 100%, .7)',
+                            border: '2px solid ',
                             paddingInline: '1.25rem',
                             borderRadius: '4rem',
                         }}>
-                        <TextField
+                        <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                            <SupervisorAccountIcon sx={{ color: 'black', marginRight: '0.5rem' }} />
+                            <Select
                                 variant="outlined"
-                                placeholder="Role"
                                 value={roleTerm}
                                 onChange={handleRoleTerm}
                                 sx={{
                                     width: '100%',
                                     background: 'none',
-                                    color: 'white',
+                                    color: 'black',
                                     '& .MuiInputBase-input': {
-                                        color: 'white',
+                                        color: 'black',
                                         padding: '1rem',
                                     },
                                     '& .MuiOutlinedInput-root': {
@@ -291,11 +328,19 @@ const Register = () => {
                                             border: 'none',
                                         },
                                     },
+                                    '& .MuiOutlinedInput-notchedOutline': {
+                                        border: 'none',
+                                    },
+                                    '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                                        border: 'none',
+                                    },
                                 }}
-                                InputProps={{
-                                    startAdornment: <SupervisorAccountIcon />,
-                                }}
-                            />
+                            >
+                                <MenuItem value="Admin">Admin</MenuItem>
+                                <MenuItem value="Patient">Patient</MenuItem>
+                            </Select>
+                        </Box>
+
                     </Box>
                 </Box>
 
@@ -314,15 +359,16 @@ const Register = () => {
                         color: 'black',
                         fontWeight: 500,
                     }}
+                    disabled={loading}
                 >
-                    Register
+                    {loading ? <CircularProgress size={24} /> : 'Register'}
                 </Button>
 
                 <Box
                     sx={{
                         fontSize: '.813rem',
                         textAlign: 'center',
-                        color: 'white',
+                        color: 'black',
                     }}
                 >
                     Already have an account?{' '}
@@ -330,7 +376,7 @@ const Register = () => {
                         component="a"
                         onClick={() => navigate('/login')}
                         sx={{
-                            color: 'white',
+                            color: 'black',
                             fontWeight: 500,
                             '&:hover': {
                                 textDecoration: 'underline',
@@ -341,6 +387,16 @@ const Register = () => {
                     </Box>
                 </Box>
             </Box>
+            <Snackbar
+                open={openSnackbar}
+                autoHideDuration={6000}
+                onClose={handleCloseSnackbar}
+                anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+            >
+                <Alert onClose={handleCloseSnackbar} severity={snackbarSeverity} sx={{ width: '100%' }}>
+                {snackbarMessage}
+                </Alert>
+            </Snackbar>
         </Box>
     );
 };

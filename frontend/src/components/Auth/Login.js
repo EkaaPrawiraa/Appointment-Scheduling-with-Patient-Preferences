@@ -7,6 +7,9 @@ import LockIcon from '@mui/icons-material/Lock';
 import bgImage from '../../assets/images/login-bg.png';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import { Snackbar,Alert,CircularProgress} from '@mui/material';
+import { useAuth } from '../../services/authService';
+
 
 
 const Login = () => {
@@ -14,7 +17,13 @@ const Login = () => {
     const [passwordTerm, setPasswordTerm] = useState('');
     const [emailFormatAllowed, setEmailFormatAllowed] = useState(false);
     const [passwordFormatAllowed, setPasswordFormatAllowed] = useState(false);
+    const [openSnackbar, setOpenSnackbar] = useState(false);
+    const [snackbarMessage, setSnackbarMessage] = useState('');
+    const [snackbarSeverity, setSnackbarSeverity] = useState('success');
     const navigate = useNavigate();
+    const { login } = useAuth();
+
+    const [loading, setLoading] = useState(false);
 
     const handleEmailTerm = (e) => {
         const inputValue = e.target.value;
@@ -25,6 +34,10 @@ const Login = () => {
         const inputValue = e.target.value;
         setPasswordTerm(inputValue);
     };
+    const handleCloseSnackbar = () => {
+        setOpenSnackbar(false);
+      };
+    
 
     const handleLoginButton = async (e) => {
         e.preventDefault();
@@ -41,17 +54,38 @@ const Login = () => {
                 });
 
                 if (response.status === 200) {
-                    console.log("Login successful");
-                    navigate('/register');
+                    const { email, role } = response.data.user;
+                    
+                    login({ email, role });
+                    setSnackbarMessage('Login Successfully');
+                    setSnackbarSeverity('success');
+                    setOpenSnackbar(true);
+                    setLoading(true);
+                    setTimeout(() => {
+                    setLoading(false);
+                    navigate('/Home');
+                    }, 2000); 
                 } else {
+                    setSnackbarMessage('Login Failed');
+                    setSnackbarSeverity('error');
+                    setOpenSnackbar(true);
                     console.error('Failed to login');
                 }
             } catch (error) {
+                setSnackbarMessage('Login Failed');
+                setSnackbarSeverity('error');
+                setOpenSnackbar(true);
                 console.error('An error occurred during login:', error);
             }
         } else if (!emailFormatAllowed) {
+                setSnackbarMessage('Invalid Email Format');
+                setSnackbarSeverity('error');
+                setOpenSnackbar(true);
             console.log("Email format salah");
         } else {
+            setSnackbarMessage('Invalid Password Format');
+            setSnackbarSeverity('error');
+            setOpenSnackbar(true);
             console.log("Password format salah");
         }
     };
@@ -91,7 +125,6 @@ const Login = () => {
                 display: 'grid',
                 alignItems: 'center',
                 justifyContent: 'center',
-                backgroundImage: `url(${bgImage})`,
                 backgroundSize: 'cover',
                 backgroundPosition: 'center',
             }}
@@ -102,9 +135,9 @@ const Login = () => {
                     position: 'relative',
                     marginInline: '1.5rem',
                     backgroundColor: 'hsla(0, 0%, 100%, .01)',
-                    border: '2px solid hsla(0, 0%, 100%, .7)',
+                    border: '2px solid ',
                     padding: '2.5rem 1rem',
-                    color: 'white',
+                    color: 'black',
                     borderRadius: '1rem',
                     backdropFilter: 'blur(16px)',
                     maxWidth: '420px',
@@ -135,7 +168,7 @@ const Login = () => {
                             gridTemplateColumns: '1fr max-content',
                             columnGap: '.75rem',
                             alignItems: 'center',
-                            border: '2px solid hsla(0, 0%, 100%, .7)',
+                            border: '2px solid ',
                             paddingInline: '1.25rem',
                             borderRadius: '4rem',
                         }}
@@ -148,9 +181,9 @@ const Login = () => {
                             sx={{
                                 width: '100%',
                                 background: 'none',
-                                color: 'white',
+                                color: 'black',
                                 '& .MuiInputBase-input': {
-                                    color: 'white',
+                                    color: 'black',
                                     padding: '1rem',
                                 },
                                 '& .MuiOutlinedInput-root': {
@@ -172,7 +205,7 @@ const Login = () => {
                             gridTemplateColumns: '1fr max-content',
                             columnGap: '.75rem',
                             alignItems: 'center',
-                            border: '2px solid hsla(0, 0%, 100%, .7)',
+                            border: '2px solid ',
                             paddingInline: '1.25rem',
                             borderRadius: '4rem',
                         }}
@@ -186,9 +219,9 @@ const Login = () => {
                             sx={{
                                 width: '100%',
                                 background: 'none',
-                                color: 'white',
+                                color: 'black',
                                 '& .MuiInputBase-input': {
-                                    color: 'white',
+                                    color: 'black',
                                     padding: '1rem',
                                 },
                                 '& .MuiOutlinedInput-root': {
@@ -218,15 +251,16 @@ const Login = () => {
                         color: 'black',
                         fontWeight: 500,
                     }}
+                    disabled={loading}
                 >
-                    Login
+                    {loading ? <CircularProgress size={24} /> : 'Login'}
                 </Button>
-
+                
                 <Box
                     sx={{
                         fontSize: '.813rem',
                         textAlign: 'center',
-                        color: 'white',
+                        color: 'black',
                     }}
                 >
                     Don't have an account?{' '}
@@ -234,7 +268,7 @@ const Login = () => {
                         component="a"
                         onClick={() => navigate('/register')}
                         sx={{
-                            color: 'white',
+                            color: 'black',
                             fontWeight: 500,
                             '&:hover': {
                                 textDecoration: 'underline',
@@ -245,6 +279,16 @@ const Login = () => {
                     </Box>
                 </Box>
             </Box>
+            <Snackbar
+                open={openSnackbar}
+                autoHideDuration={6000}
+                onClose={handleCloseSnackbar}
+                anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+            >
+                <Alert onClose={handleCloseSnackbar} severity={snackbarSeverity} sx={{ width: '100%' }}>
+                {snackbarMessage}
+                </Alert>
+            </Snackbar>
         </Box>
     );
 };
