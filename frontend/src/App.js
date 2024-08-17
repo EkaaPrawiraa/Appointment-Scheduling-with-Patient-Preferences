@@ -82,9 +82,12 @@ function App() {
     fetchTimeSlots();
   }, []);
 
+  const email = user?.email || '';
+  const atIndex = email.indexOf('@');
+  const nameBeforeAt = atIndex !== -1 ? email.substring(0, atIndex) : '';
   return (
     <Router>
-      <Header userName={user?.email || 'Guest'} userRole={user?.role || 'Role'} />
+      <Header userName={nameBeforeAt || 'Guest'} userRole={user?.role || 'Role'} />
       <main>
         <Routes>
           <Route path="/login" element={<Login />} />

@@ -90,6 +90,7 @@ const Login = () => {
     };
 
     useEffect(() => {
+        
         if (emailTerm.startsWith('@')) {
             setEmailFormatAllowed(false);
             return;
