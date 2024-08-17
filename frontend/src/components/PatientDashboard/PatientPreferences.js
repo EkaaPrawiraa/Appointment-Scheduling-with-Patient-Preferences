@@ -6,20 +6,30 @@ import FormControl from '@mui/material/FormControl';
 import InputLabel from '@mui/material/InputLabel';
 import bgImage from '../../assets/images/com.webp';
 
-const PatientPreferencesComponent = ({ doctorArray, timeSlotArray, getOptionDisabled, setSelectedDoctor, setSelectedTimeSlot, selectedTimeSlot, selectedDoctor, disabled }) => {
+const PatientPreferencesComponent = ({
+    doctorArray,
+    timeSlotArray,
+    setSelectedDoctor,
+    setSelectedTimeSlot,
+    selectedTimeSlot,
+    selectedDoctor,
+    disabled
+}) => {
     return (
-        <Box sx={{
-            position: 'relative',
-            display: 'grid',
-            alignItems: 'center',
-            justifyContent: 'center',
-            backgroundImage: `url(${bgImage})`,
-            backgroundSize: 'cover',
-            backgroundPosition: 'center',
-            border: '2px solid',
-            borderRadius: '30px',
-            padding: '10px',
-        }}>
+        <Box
+            sx={{
+                position: 'relative',
+                display: 'grid',
+                alignItems: 'center',
+                justifyContent: 'center',
+                backgroundImage: `url(${bgImage})`,
+                backgroundSize: 'cover',
+                backgroundPosition: 'center',
+                border: '2px solid',
+                borderRadius: '30px',
+                padding: '10px',
+            }}
+        >
             <Box>
                 <FormControl variant="outlined" sx={{ width: 500, marginBottom: 2 }}>
                     <InputLabel id="doctor-select-label">Select Doctor</InputLabel>
@@ -40,11 +50,10 @@ const PatientPreferencesComponent = ({ doctorArray, timeSlotArray, getOptionDisa
                                 border: 'none',
                             },
                         }}
-                        
                     >
                         {doctorArray.map((doctor, index) => (
                             <MenuItem key={index} value={doctor.label}>
-                                {doctor.name}
+                                {doctor.label}
                             </MenuItem>
                         ))}
                     </Select>
@@ -73,7 +82,7 @@ const PatientPreferencesComponent = ({ doctorArray, timeSlotArray, getOptionDisa
                         }}
                     >
                         {timeSlotArray?.map((slot, index) => (
-                            <MenuItem key={index} value={slot.label} disabled={getOptionDisabled(slot)}>
+                            <MenuItem key={index} value={slot.label}>
                                 {slot.label}
                             </MenuItem>
                         ))}
@@ -83,6 +92,5 @@ const PatientPreferencesComponent = ({ doctorArray, timeSlotArray, getOptionDisa
         </Box>
     );
 };
-
 
 export default PatientPreferencesComponent;

@@ -11,7 +11,7 @@ import { useNavigate } from 'react-router-dom';
 
 
 const Footer = () => {
-    const { user, logout } = useAuth(); // Dapatkan user dari context
+    const { user, logout } = useAuth(); 
     const navigate = useNavigate();
 
     const handleSignOut = () => {

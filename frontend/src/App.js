@@ -3,11 +3,12 @@ import Register from './components/Auth/Register';
 import Home from './pages/Home';
 import Patient from './pages/Patient';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import React, { useState,useEffect } from 'react';
+import React, { useState,useEffect,useContext } from 'react';
 import axios from 'axios';
 import Footer from './components/Layout/Footer';
 import Header from './components/Layout/Header';
 import { useAuth } from './services/authService';
+import { TimerContext } from './services/timerService';
 import NotFound from './pages/NotFound';
 import Admin from './pages/Admin';
 
@@ -17,18 +18,14 @@ function App() {
   const [doctorArray, setDoctorArray] = useState([]);
   const [timeSlotArray, setTimeSlotArray] = useState([]);
   const { user } = useAuth();
+  const { isOpenAppointment } = useContext(TimerContext);
 
   const [patientName,setPatientName]=useState([]);
-  const [availabilityMatrix, setAvailabilityMatrix] = useState([
-    [0, 0, 0, -1],  
-    [-1, 0, 0, 0],  
-    [0, 0, 0, 0],   
-    [0, -1, 0, 0],  
-  ]);
+  const [availabilityMatrix, setAvailabilityMatrix] = useState();
 
   const getOptionsDisabled = (option, timeSlotArray, doctorIndex) => {
     const timeSlotIndex = timeSlotArray.findIndex(slot => slot.label === option.label);
-    return availabilityMatrix[doctorIndex][timeSlotIndex] === -1;
+    return availabilityMatrix[doctorIndex]?.[timeSlotIndex] === -1;
   };
   const getPatientPreference = ({doctorPref,timePref})=>{
     //check if patient's already filled a preference
@@ -37,6 +34,16 @@ function App() {
     console.log(allTimePreferences);
     console.log(allDoctorPreferences);
   };
+  const matrixSet = ({ newMatrix }) => {
+    setAvailabilityMatrix(newMatrix);
+    console.log('Updated Availability Matrix:', newMatrix);
+  };
+
+  useEffect(()=>{
+    if (!isOpenAppointment && allTimePreferences.length!=0){
+      console.log("Send algoritma")
+    }
+  },[isOpenAppointment]);
 
   useEffect(() => {
     const fetchDoctors = async () => {
@@ -85,7 +92,7 @@ function App() {
           <Route path="/patient" element={<Patient getOptionsDisabled={getOptionsDisabled} getPref={getPatientPreference} doctorArray={doctorArray} timeSlotArray={timeSlotArray}/>} />
           <Route path="/Home" element={<Home/>}/>
           <Route path="/Home" element={<Home/>}/>
-          <Route path="/Admin" element={<Admin/>}/>
+          <Route path="/Admin" element={<Admin doctorArray={doctorArray} timeSlotArray={timeSlotArray} matrixSet={matrixSet} />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </main>

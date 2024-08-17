@@ -4,7 +4,6 @@ import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import PersonIcon from '@mui/icons-material/Person';
 import LockIcon from '@mui/icons-material/Lock';
-import bgImage from '../../assets/images/login-bg.png';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { Snackbar,Alert,CircularProgress} from '@mui/material';
