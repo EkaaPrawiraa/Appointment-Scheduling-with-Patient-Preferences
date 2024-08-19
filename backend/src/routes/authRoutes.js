@@ -4,7 +4,51 @@ const User = require('../models/User');
 const bcrypt = require('bcrypt');
 const { body, validationResult } = require('express-validator');
 
-// POST: Login user
+/**
+ * @swagger
+ * tags:
+ *   name: Users
+ *   description: User management
+ */
+
+/**
+ * @swagger
+ * /login:
+ *   post:
+ *     summary: Login a user
+ *     description: Authenticate a user with email and password
+ *     tags: [Users]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               email:
+ *                 type: string
+ *                 format: email
+ *                 description: User email
+ *               password:
+ *                 type: string
+ *                 description: User password
+ *     responses:
+ *       200:
+ *         description: Successful login
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                 user:
+ *                   $ref: '#/components/schemas/User'
+ *       401:
+ *         description: Invalid credentials
+ *       500:
+ *         description: Server error
+ */
 router.post('/login', async (req, res) => {
     const { email, password } = req.body;
     try {
@@ -23,7 +67,25 @@ router.post('/login', async (req, res) => {
     }
 });
 
-// GET: Fetch all users
+/**
+ * @swagger
+ * /users:
+ *   get:
+ *     summary: Get all users
+ *     description: Retrieve a list of all users
+ *     tags: [Users]
+ *     responses:
+ *       200:
+ *         description: A list of users
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/User'
+ *       500:
+ *         description: Server error
+ */
 router.get('/users', async (req, res) => {
     try {
         const users = await User.find({});
@@ -33,7 +95,44 @@ router.get('/users', async (req, res) => {
     }
 });
 
-// POST: Register user
+/**
+ * @swagger
+ * /register:
+ *   post:
+ *     summary: Register a new user
+ *     description: Create a new user with email and password
+ *     tags: [Users]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               email:
+ *                 type: string
+ *                 format: email
+ *                 description: User email
+ *               password:
+ *                 type: string
+ *                 description: User password
+ *               role:
+ *                 type: string
+ *                 description: User role
+ *     responses:
+ *       201:
+ *         description: User created successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/User'
+ *       400:
+ *         description: Invalid input
+ *       409:
+ *         description: Email already exists
+ *       500:
+ *         description: Server error
+ */
 router.post('/register', [
     body('email').isEmail().withMessage('Invalid email format'),
     body('password').isLength({ min: 8 }).withMessage('Password minimal 8 char'),
@@ -44,7 +143,7 @@ router.post('/register', [
     }
     const { email, password, role } = req.body;
     try {
-        const existingUser = await User.findOne({ email, password});
+        const existingUser = await User.findOne({ email });
         if (existingUser) {
             return res.status(409).json({ message: 'Email sudah ada' });
         }

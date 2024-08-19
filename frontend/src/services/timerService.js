@@ -5,33 +5,38 @@ export const TimerContext = createContext();
 export const TimerProvider = ({ children }) => {
     const [isOpenAppointment, setIsOpenAppointment] = useState(false);
     const [timer, setTimer] = useState(null);
+    const [appointmentId, setAppointmentId] = useState(0);
 
-    useEffect(() => {
-        if (isOpenAppointment) {
-            const timeoutId = setTimeout(() => {
-                setIsOpenAppointment(false);
-                localStorage.setItem('registrationOpen', 'false');
-            }, 600000);
+    const incrementAppointmentId = () => {
+        setAppointmentId(prevId => prevId + 1);
+    };
 
-            setTimer(timeoutId);
-        } else {
+    const openRegistration = (duration = 600000) => { 
+        localStorage.setItem('registrationOpen', 'true');
+        setIsOpenAppointment(true);
+
+        if (timer) {
             clearTimeout(timer);
         }
 
-        return () => {
-            clearTimeout(timer);
-        };
-    }, [isOpenAppointment]);
+        const timeoutId = setTimeout(() => {
+            localStorage.setItem('registrationOpen', 'false');
+            setIsOpenAppointment(false);
+            incrementAppointmentId();  
+        }, duration);
 
-    const openRegistration = () => {
-        localStorage.setItem('registrationOpen', 'true');
-        setIsOpenAppointment(true);
+        setTimer(timeoutId);
     };
 
     const closeRegistration = () => {
-        clearTimeout(timer);
         localStorage.setItem('registrationOpen', 'false');
         setIsOpenAppointment(false);
+
+        if (timer) {
+            clearTimeout(timer);
+        }
+
+        incrementAppointmentId();  
     };
 
     useEffect(() => {
@@ -44,7 +49,12 @@ export const TimerProvider = ({ children }) => {
     }, []);
 
     return (
-        <TimerContext.Provider value={{ isOpenAppointment, openRegistration, closeRegistration }}>
+        <TimerContext.Provider value={{ 
+            isOpenAppointment, 
+            openRegistration, 
+            closeRegistration, 
+            appointmentId  
+        }}>
             {children}
         </TimerContext.Provider>
     );

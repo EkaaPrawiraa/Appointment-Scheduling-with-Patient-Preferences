@@ -65,7 +65,7 @@ const Login = () => {
                     navigate('/Home');
                     }, 2000); 
                 } else {
-                    setSnackbarMessage('Login Failed');
+                    setSnackbarMessage('Wrong Email Or Password');
                     setSnackbarSeverity('error');
                     setOpenSnackbar(true);
                     console.error('Failed to login');
@@ -121,8 +121,8 @@ const Login = () => {
         <Box
             sx={{
                 position: 'relative',
-                height: '100vh',
-                display: 'grid',
+                height: '80vh',
+                display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
                 backgroundSize: 'cover',
@@ -142,6 +142,7 @@ const Login = () => {
                     backdropFilter: 'blur(16px)',
                     maxWidth: '420px',
                     width: '100%',
+                    
                 }}
             >
                 <Box

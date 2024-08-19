@@ -74,7 +74,7 @@ const Register = () => {
                     navigate('/login');
                     }, 2000);
                 } else {
-                    setSnackbarMessage('Registration Failed');
+                    setSnackbarMessage('Registration Failed. Email Already Exist');
                     setSnackbarSeverity('error');
                     setOpenSnackbar(true);
                     console.error('Failed to register');
@@ -150,8 +150,8 @@ const Register = () => {
         <Box
             sx={{
                 position: 'relative',
-                height: '100vh',
-                display: 'grid',
+                height: '80vh',
+                display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
                 backgroundSize: 'cover',

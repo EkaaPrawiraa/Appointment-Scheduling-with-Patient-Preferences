@@ -28,7 +28,22 @@ const Patient = ({ getOptionsDisabled, getPref, doctorArray, timeSlotArray }) =>
         </Typography>
       </Box>
     );
+  } else if (!isOpenAppointment){
+    return (
+      <Box sx={{
+          position: 'relative',
+          height: '100%',
+          display: 'grid',
+          alignItems: 'center',
+          justifyContent: 'center',
+      }}>
+          <Typography variant="h3" sx={{ fontFamily: '"Anton", sans-serif', color: 'red' }}>
+          The Registration is Closed
+          </Typography>
+      </Box>
+  );
   }
+  
 
   const handleSetDoctorPreference = (index, value) => {
     const updatedPreferences = [...doctorPreference];

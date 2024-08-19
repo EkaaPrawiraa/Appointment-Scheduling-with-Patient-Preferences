@@ -74,7 +74,7 @@ const AdminMatrixComponent = ({ doctorArray, timeSlotArray, matrixStateSet, onCl
                 margin: '0 auto',
                 backgroundColor: '#fdf4e3',
                 borderRadius: 2,
-                border: '3px solid #ddd',
+                border: '10px solid #ffff',
                 backdropFilter: 'blur(10px)',
                 boxShadow: 3,
                 position: 'relative',

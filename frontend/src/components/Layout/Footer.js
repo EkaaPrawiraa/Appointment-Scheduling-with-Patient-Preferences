@@ -58,7 +58,7 @@ const Footer = () => {
                             color: 'black',
                             fontSize: '1.25rem' 
                         }}
-                        startIcon={<HomeIcon sx={{ fontSize: 'rem' }} />} 
+                        startIcon={<HomeIcon sx={{ fontSize: '2 rem' }} />} 
                     >
                         Home
                     </Button>
