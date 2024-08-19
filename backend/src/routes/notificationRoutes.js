@@ -3,44 +3,46 @@ const Notification = require('../models/Notification');
 const router = express.Router();
 
 module.exports = function(io) {
-    router.post('/notificationss/user/accepted/:email', async (req, res) => {
+    router.post('/notificationss/user/accepted/:id', async (req, res) => {
         try {
-            const email = req.params.email;
-            
-            const notifications = await Notification.find({ email });
-            if (notifications.length > 0) {
-                await Promise.all(notifications.map(async (notification) => {
-                    notification.status = 'accepted';
-                    await notification.save();
+            const _id = req.params.id;
+            const notification = await Notification.findById({ _id });
+            if (notification) {
+                notification.status = 'accepted';
+                await notification.save();
+                if (notification && notification.email) {
+                    console.log(notification._id);
+                    console.log(notification.email);
                     io.to(notification.email).emit('receiveNotification', notification);
-                }));
-
-                res.json({ message: 'Appointment accepted', notifications });
+                } else {
+                    console.error("Notification or email is missing");
+                }
+                res.json({ message: 'Appointment accepted', notification });
             } else {
-                res.status(404).json({ message: 'Notifications not found' });
+                res.status(404).json({ message: 'Notification not found' });
             }
         } catch (error) {
             res.status(500).json({ message: 'Error accepting appointment', error });
         }
     });
 
-    router.post('/notificationss/user/canceled/:email', async (req, res) => {
+    router.post('/notificationss/user/canceled/:id', async (req, res) => {
         try {
-            const email = req.params.email;
-            
-
-            const notifications = await Notification.find({ email });
-
-            if (notifications.length > 0) {
-                await Promise.all(notifications.map(async (notification) => {
-                    notification.status = 'cancelled';
-                    await notification.save();
+            const _id = req.params.id;
+            const notification = await Notification.findById({ _id });
+            if (notification) {
+                notification.status = 'cancelled';
+                await notification.save();
+                if (notification && notification.email) {
+                    console.log(notification._id);
+                    console.log(notification.email);
                     io.to(notification.email).emit('receiveNotification', notification);
-                }));
-
-                res.json({ message: 'Appointment cancelled', notifications });
+                } else {
+                    console.error("Notification or email is missing");
+                }
+                res.json({ message: 'Appointment cancelled', notification });
             } else {
-                res.status(404).json({ message: 'Notifications not found' });
+                res.status(404).json({ message: 'Notification not found' });
             }
         } catch (error) {
             res.status(500).json({ message: 'Error cancelling appointment', error });

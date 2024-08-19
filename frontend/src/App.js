@@ -65,28 +65,29 @@ function App() {
 		return availabilityMatrix[doctorIndex]?.[timeSlotIndex] === -1;
 	};
 	const handleAccept = async (notificationss) => {
-		const email = notificationss.email;
+		console.log(notifications)
+		const id = notificationss._id;
+		console.log(notificationss);
 		try {
 			const response = await axios.post(
-				`http://localhost:5001/api/notificationss/user/accepted/${email}`
+				`http://localhost:5001/api/notificationss/user/accepted/${id}`
 			);
 			console.log("Appointment accepted:", response.data);
-			setNotifications((prev) =>
-				prev.map((notification) =>
-					notification._id === notificationss._id
-						? { ...notification, status: "accepted" }
-						: notification
-				)
-			);
+			setNotifications([]);
+			fetchNotifications();
+			console.log(notifications);
+			const email = notificationss.email
 			const doctorName = notificationss.message.substring((notificationss.message.indexOf("with ") + "with ".length),notificationss.message.indexOf(" on")).trim();
 			const time_start =notificationss.message.substring((notificationss.message.indexOf("on ") + "on ".length),notificationss.message.indexOf(" -")).trim();
 			const time_end =notificationss.message.substring((notificationss.message.indexOf("- ") + "- ".length),notificationss.message.indexOf("?")).trim();
+
 			const responses = await axios.post(`http://localhost:5001/api/history`, {
 				email,
 				doctorName,
 				time_start,
 				time_end
 			});
+			
 		} catch (error) {
 			console.error("Error accepting appointment:", error);
 		}
@@ -94,18 +95,15 @@ function App() {
 
 	const handleCancel = async (notificationss) => {
 		try {
-			const email = notificationss.email;
+			const id = notificationss._id;
+			console.log(id);
 			const response = await axios.post(
-				`http://localhost:5001/api/notificationss/user/canceled/${email}`
+				`http://localhost:5001/api/notificationss/user/canceled/${id}`
 			);
 			console.log("Appointment canceled:", response.data);
-			setNotifications((prev) =>
-				prev.map((notification) =>
-					notification._id === notificationss._id
-						? { ...notification, status: "cancelled" }
-						: notification
-				)
-			);
+			setNotifications([]);
+			fetchNotifications();
+			console.log(notifications);
 		} catch (error) {
 			console.error("Error canceling appointment:", error);
 		}
@@ -156,9 +154,11 @@ function App() {
 			result.combination.forEach(({ name, doctor, timeSlot }) => {
 				sendNotification(name, doctor, timeSlot);
 			});
+			fetchNotifications();
 
 			//reset
-			setPatientData([[], [], []]);
+			setAllTimePreferences([]);
+			setPatientData([["", [], []]]);
 			setPatientName([]);
 		}
 	}, [isOpenAppointment]);
@@ -224,19 +224,20 @@ function App() {
 		);
 	}, []);
 
+	const fetchNotifications = async () => {
+		try {
+			setNotifications([]);
+			const response = await axios.get(
+				`http://localhost:5001/api/notificationss/user/${user.email}`
+			);
+			setNotifications(response.data);
+		} catch (error) {
+			console.error("Error fetching notifications:", error);
+		}
+	};
+
 	useEffect(() => {
 		if (user?.email) {
-			const fetchNotifications = async () => {
-				try {
-					setNotifications([]);
-					const response = await axios.get(
-						`http://localhost:5001/api/notificationss/user/${user.email}`
-					);
-					setNotifications(response.data);
-				} catch (error) {
-					console.error("Error fetching notifications:", error);
-				}
-			};
 			fetchNotifications();
 			joinRoom(user.email);
 			const handleNotificationReceived = (notification) => {
@@ -250,7 +251,7 @@ function App() {
 		} else {
 			setNotifications([]);
 		}
-	}, [user?.email]);
+	}, [user?.email,isOpenAppointment]);
 
 	const handleNotifButton = () => {
 		if (!showNotif) {

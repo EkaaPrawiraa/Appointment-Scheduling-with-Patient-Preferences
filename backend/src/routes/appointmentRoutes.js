@@ -107,15 +107,16 @@ router.get('/history', async (req, res) => {
  *         description: Server error
  */
 router.post('/history', async (req, res) => {
-    const { patientName, doctorName, time_start, time_end } = req.body;
+    console.log(req.body);
+    const { email, doctorName, time_start, time_end } = req.body;
 
     const appointment = new Appointment({
-        patientName,
+        patientName :email,
         doctorName,
         time_start,
         time_end
     });
-
+    
     try {
         const newAppointment = await appointment.save();
         res.status(201).json(newAppointment);

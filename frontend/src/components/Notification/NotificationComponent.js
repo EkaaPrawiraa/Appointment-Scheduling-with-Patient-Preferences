@@ -30,7 +30,7 @@ const NotificationList = ({ notifications, onAccept, onCancel }) => {
 					No notifications
 				</Typography>
 			) : (
-				notifications.map((notification) => (
+				notifications.map((notification,index) => (
 					<Box key={notification._id} sx={{ paddingBottom: "10px" }}>
 						<Typography variant="body2">{notification.message}</Typography>
 						{notification.status == "pending" ? (
@@ -38,7 +38,7 @@ const NotificationList = ({ notifications, onAccept, onCancel }) => {
 								<Button
 									variant="contained"
 									color="primary"
-									onClick={() => onAccept(notification.email)}
+									onClick={() => onAccept(notification)}
 									sx={{ marginRight: "5px" }}
 								>
 									<CheckIcon />
@@ -46,7 +46,7 @@ const NotificationList = ({ notifications, onAccept, onCancel }) => {
 								<Button
 									variant="contained"
 									color="secondary"
-									onClick={() => onCancel(notification.email)}
+									onClick={() => onCancel(notification)}
 								>
 									<CloseIcon />
 								</Button>

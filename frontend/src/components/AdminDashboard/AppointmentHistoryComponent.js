@@ -17,6 +17,7 @@ const OpenHistory = ({ onClose }) => {
         };
 
         fetchAppointments();
+        console.log(appointments);
     }, []);
 
     return (
@@ -53,10 +54,10 @@ const OpenHistory = ({ onClose }) => {
                                         Appointment ID: {appointment.appointmentId}
                                     </Typography>
                                     <Typography variant="body1">
-                                        Patient Name: {appointment.patientName}
+                                        Patient's Name: {appointment.patientName}
                                     </Typography>
                                     <Typography variant="body1">
-                                        Doctor Name: {appointment.doctorName}
+                                        Doctor's Name: {appointment.doctorName}
                                     </Typography>
                                     <Typography variant="body1">
                                         Time : {(appointment.time_start)} - {(appointment.time_end)}
