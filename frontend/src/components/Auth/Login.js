@@ -43,7 +43,7 @@ const Login = () => {
 
         if (emailFormatAllowed && passwordFormatAllowed) {
             try {
-                const response = await axios.post('http://myappfix-egg0egd2ehahdjaa.southeastasia-01.azurewebsites.net/api/login', {
+                const response = await axios.post('https://myappfix-egg0egd2ehahdjaa.southeastasia-01.azurewebsites.net/api/login', {
                     email: emailTerm,
                     password: passwordTerm,
                 }, {

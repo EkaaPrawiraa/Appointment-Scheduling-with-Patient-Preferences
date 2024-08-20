@@ -40,7 +40,7 @@ function App() {
 	const [socket, setSocket] = useState(null);
 
 	useEffect(() => {
-		const socketInstance = io("http://myappfix-egg0egd2ehahdjaa.southeastasia-01.azurewebsites.net");
+		const socketInstance = io("https://myappfix-egg0egd2ehahdjaa.southeastasia-01.azurewebsites.net");
 		setSocket(socketInstance);
 
 		return () => {
@@ -83,7 +83,7 @@ function App() {
 		setOpenSnackbar(true);
 		try {
 			const response = await axios.post(
-				`http://myappfix-egg0egd2ehahdjaa.southeastasia-01.azurewebsites.net/api/notificationss/user/accepted/${id}`
+				`https://myappfix-egg0egd2ehahdjaa.southeastasia-01.azurewebsites.net/api/notificationss/user/accepted/${id}`
 			);
 			fetchNotifications();
 			const email = notificationss.email;
@@ -106,7 +106,7 @@ function App() {
 				)
 				.trim();
 
-			const responses = await axios.post(`http://myappfix-egg0egd2ehahdjaa.southeastasia-01.azurewebsites.net/api/history`, {
+			const responses = await axios.post(`https://myappfix-egg0egd2ehahdjaa.southeastasia-01.azurewebsites.net/api/history`, {
 				email,
 				doctorName,
 				time_start,
@@ -125,7 +125,7 @@ function App() {
 			setOpenSnackbar(true);
 			const id = notificationss._id;
 			const response = await axios.post(
-				`http://myappfix-egg0egd2ehahdjaa.southeastasia-01.azurewebsites.net/api/notificationss/user/canceled/${id}`
+				`https://myappfix-egg0egd2ehahdjaa.southeastasia-01.azurewebsites.net/api/notificationss/user/canceled/${id}`
 			);
 			fetchNotifications();
 			setSnackbarMessage("Appointment Cancelled");
@@ -199,7 +199,7 @@ function App() {
 		try {
 			const message = `Do you accept your appointment with ${doc.name} on ${time.label}?`;
 			const response = await axios.post(
-				"http://myappfix-egg0egd2ehahdjaa.southeastasia-01.azurewebsites.net/api/notificationss/user",
+				"https://myappfix-egg0egd2ehahdjaa.southeastasia-01.azurewebsites.net/api/notificationss/user",
 				{
 					email: patientName,
 					message,
@@ -214,7 +214,7 @@ function App() {
 	useEffect(() => {
 		const fetchDoctors = async () => {
 			try {
-				const response = await axios.get("http://myappfix-egg0egd2ehahdjaa.southeastasia-01.azurewebsites.net/api/doctors");
+				const response = await axios.get("https://myappfix-egg0egd2ehahdjaa.southeastasia-01.azurewebsites.net/api/doctors");
 				const doctors = response.data.map((doctor) => ({
 					id: doctor.id_doctor,
 					name: doctor.doctor_name,
@@ -227,7 +227,7 @@ function App() {
 		};
 		const fetchTimeSlots = async () => {
 			try {
-				const response = await axios.get("http://myappfix-egg0egd2ehahdjaa.southeastasia-01.azurewebsites.net/api/timeslots");
+				const response = await axios.get("https://myappfix-egg0egd2ehahdjaa.southeastasia-01.azurewebsites.net/api/timeslots");
 				const timeSlots = response.data.map((slot) => ({
 					id: slot.id_time_slot,
 					start: new Date(slot.time_start),
@@ -256,7 +256,7 @@ function App() {
 		try {
 			setNotifications([]);
 			const response = await axios.get(
-				`http://myappfix-egg0egd2ehahdjaa.southeastasia-01.azurewebsites.net/api/notificationss/user/${user.email}`
+				`https://myappfix-egg0egd2ehahdjaa.southeastasia-01.azurewebsites.net/api/notificationss/user/${user.email}`
 			);
 			setNotifications(response.data);
 		} catch (error) {
