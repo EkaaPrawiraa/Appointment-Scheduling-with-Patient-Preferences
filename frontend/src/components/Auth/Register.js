@@ -56,7 +56,7 @@ const Register = () => {
 
         if (emailFormatAllowed && passwordFormatAllowed && passwordConfirmationAllowed && (roleTerm === 'Admin' || roleTerm === 'Patient')) {
             try {
-                const response = await axios.post('http://localhost:5001/api/register', {
+                const response = await axios.post('http://myappfix-egg0egd2ehahdjaa.southeastasia-01.azurewebsites.net/api/register', {
                     email: emailTerm,
                     password: passwordTerm,
                     role: roleTerm,

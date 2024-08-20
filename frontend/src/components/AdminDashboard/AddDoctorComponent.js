@@ -52,7 +52,7 @@ const DoctorManagement = ({ onClose,doctorss }) => {
 
     const fetchDoctors = async () => {
         try {
-            const response = await axios.get('http://localhost:5001/api/doctors');
+            const response = await axios.get('http://myappfix-egg0egd2ehahdjaa.southeastasia-01.azurewebsites.net/api/doctors');
             setDoctors(response.data);
         } catch (error) {
             console.error('Error fetching doctors:', error);
@@ -83,7 +83,7 @@ const DoctorManagement = ({ onClose,doctorss }) => {
     const handleSubmit = async () => {
         if (dialogType === 'add') {
             try {
-                const response = await axios.post('http://localhost:5001/api/doctors/single', { id_doctor: idDoctor, doctor_name: doctorName });
+                const response = await axios.post('http://myappfix-egg0egd2ehahdjaa.southeastasia-01.azurewebsites.net/api/doctors/single', { id_doctor: idDoctor, doctor_name: doctorName });
                 setDoctors([...doctors, response.data]);
                 setSnackbarMessage('Doctor added successfully');
                 setSnackbarSeverity('success');
@@ -94,7 +94,7 @@ const DoctorManagement = ({ onClose,doctorss }) => {
             }
         } else if (dialogType === 'edit' && editingDoctor) {
             try {
-                const response = await axios.put(`http://localhost:5001/api/doctors/${editingDoctor._id}`, { id_doctor: idDoctor, doctor_name: doctorName });
+                const response = await axios.put(`http://myappfix-egg0egd2ehahdjaa.southeastasia-01.azurewebsites.net/api/doctors/${editingDoctor._id}`, { id_doctor: idDoctor, doctor_name: doctorName });
                 setDoctors(doctors.map(d => d._id === response.data._id ? response.data : d));
                 setSnackbarMessage('Doctor updated successfully');
                 setSnackbarSeverity('success');
@@ -110,7 +110,7 @@ const DoctorManagement = ({ onClose,doctorss }) => {
 
     const handleDeleteDoctor = async (id) => {
         try {
-            await axios.delete(`http://localhost:5001/api/doctors/${id}`);
+            await axios.delete(`http://myappfix-egg0egd2ehahdjaa.southeastasia-01.azurewebsites.net/api/doctors/${id}`);
             setDoctors(doctors.filter(doctor => doctor._id !== id));
             setSnackbarMessage('Doctor deleted successfully');
             setSnackbarSeverity('success');

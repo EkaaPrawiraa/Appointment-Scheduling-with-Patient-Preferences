@@ -1,6 +1,6 @@
 import { io } from "socket.io-client";
 
-const socket = io("http://localhost:5001");
+const socket = io("http://myappfix-egg0egd2ehahdjaa.southeastasia-01.azurewebsites.net");
 
 export const joinRoom = (userId) => {
     console.log(`Joining room userId: ${userId}`);

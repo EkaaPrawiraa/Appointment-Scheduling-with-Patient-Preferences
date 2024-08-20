@@ -54,7 +54,7 @@ const TimeSlotManagement = ({ onClose, timeSlotsUpdate }) => {
 
     const fetchTimeSlots = async () => {
         try {
-            const response = await axios.get('http://localhost:5001/api/timeslots');
+            const response = await axios.get('http://myappfix-egg0egd2ehahdjaa.southeastasia-01.azurewebsites.net/api/timeslots');
             setTimeSlots(response.data);
         } catch (error) {
             console.error('Error fetching time slots:', error);
@@ -93,7 +93,7 @@ const TimeSlotManagement = ({ onClose, timeSlotsUpdate }) => {
 
         if (dialogType === 'add') {
             try {
-                const response = await axios.post('http://localhost:5001/api/timeslots/single', data);
+                const response = await axios.post('http://myappfix-egg0egd2ehahdjaa.southeastasia-01.azurewebsites.net/api/timeslots/single', data);
                 setTimeSlots([...timeSlots, response.data]);
                 setSnackbarMessage('Time slot added successfully');
                 setSnackbarSeverity('success');
@@ -104,7 +104,7 @@ const TimeSlotManagement = ({ onClose, timeSlotsUpdate }) => {
             }
         } else if (dialogType === 'edit' && editingTimeSlot) {
             try {
-                const response = await axios.put(`http://localhost:5001/api/timeslots/${editingTimeSlot._id}`, data);
+                const response = await axios.put(`http://myappfix-egg0egd2ehahdjaa.southeastasia-01.azurewebsites.net/api/timeslots/${editingTimeSlot._id}`, data);
                 setTimeSlots(timeSlots.map(ts => ts._id === response.data._id ? response.data : ts));
                 setSnackbarMessage('Time slot updated successfully');
                 setSnackbarSeverity('success');
@@ -120,7 +120,7 @@ const TimeSlotManagement = ({ onClose, timeSlotsUpdate }) => {
 
     const handleDeleteTimeSlot = async (id) => {
         try {
-            await axios.delete(`http://localhost:5001/api/timeslots/${id}`);
+            await axios.delete(`http://myappfix-egg0egd2ehahdjaa.southeastasia-01.azurewebsites.net/api/timeslots/${id}`);
             setTimeSlots(timeSlots.filter(timeSlot => timeSlot._id !== id));
             setSnackbarMessage('Time slot deleted successfully');
             setSnackbarSeverity('success');

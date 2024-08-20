@@ -9,7 +9,7 @@ const OpenHistory = ({ onClose }) => {
     useEffect(() => {
         const fetchAppointments = async () => {
             try {
-                const response = await axios.get('http://localhost:5001/api/history');
+                const response = await axios.get('http://myappfix-egg0egd2ehahdjaa.southeastasia-01.azurewebsites.net/api/history');
                 setAppointments(response.data);
             } catch (error) {
                 console.error('Error fetching appointment history:', error);
