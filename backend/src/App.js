@@ -11,12 +11,12 @@ const notificationRoutes = require('./routes/notificationRoutes');
 const setupSocket = require('./services/notificationService');
 const http = require('http');
 const socketIo = require('socket.io');
-
 const app = express();
 const server = http.createServer(app);
+
 const io = socketIo(server, {
     cors: {
-        origin: 'http://localhost:3000', 
+        origin: 'https://appointment-scheduling-with-patient-preferences.vercel.app', 
         methods: ['GET', 'POST'],
         allowedHeaders: ['Content-Type', 'Authorization'], 
         credentials: true
@@ -24,7 +24,7 @@ const io = socketIo(server, {
 });
 
 const corsOptions = {
-    origin: 'http://localhost:3000', 
+    origin: 'https://appointment-scheduling-with-patient-preferences.vercel.app', 
     methods: ['GET', 'POST', 'PUT', 'DELETE'], 
     allowedHeaders: ['Content-Type', 'Authorization'], 
     credentials: true, 
