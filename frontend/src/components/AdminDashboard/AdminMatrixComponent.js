@@ -43,7 +43,6 @@ const AdminMatrixComponent = ({ doctorArray, timeSlotArray, matrixStateSet, onCl
             await new Promise(resolve => setTimeout(resolve, 2000));
             setSnackbarMessage('Matrix Saved Successfully');
             setSnackbarSeverity('success');
-            console.log(matrix);
             matrixStateSet({ newMatrix: matrix });
         } catch (error) {
             setSnackbarMessage('Failed to Save Matrix');

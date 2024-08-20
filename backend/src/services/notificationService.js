@@ -15,7 +15,9 @@ const setupSocket = (io) => {
                     message: data.message
                 });
                 await newNotification.save();
+                console.log("bisa");
                 io.to(data.userId).emit('receiveNotification', newNotification);
+                console.log("bisa1");
             } catch (error) {
                 console.error('Error sending notification:', error);
             }

@@ -13,6 +13,7 @@ import NotFound from "./pages/NotFound";
 import Admin from "./pages/Admin";
 import findBestCombination from "./utils/dpAlgorithm";
 import { io } from "socket.io-client";
+import { Snackbar, Alert } from "@mui/material";
 import {
 	joinRoom,
 	onNotificationReceived,
@@ -27,6 +28,9 @@ function App() {
 	const [timeSlotArray, setTimeSlotArray] = useState([]);
 	const { user } = useAuth();
 	const { isOpenAppointment, appointmentId } = useContext(TimerContext);
+	const [openSnackbar, setOpenSnackbar] = useState(false);
+	const [snackbarMessage, setSnackbarMessage] = useState("");
+	const [snackbarSeverity, setSnackbarSeverity] = useState("success");
 
 	const [patientName, setPatientName] = useState([]);
 	const [availabilityMatrix, setAvailabilityMatrix] = useState();
@@ -47,16 +51,25 @@ function App() {
 	useEffect(() => {
 		if (user?.email) {
 			joinRoom(user.email);
-
-			onNotificationReceived((notification) => {
-				setNotifications((prev) => [...prev, notification]);
-			});
-
+			const handleNotificationReceived = (notification) => {
+				if (notification) {
+					setNotifications((prev) => [...prev, notification]);
+				} else {
+					console.error("Received notification is null or undefined");
+				}
+			};
+			onNotificationReceived(handleNotificationReceived);
 			return () => {
 				disconnectSocket();
 			};
+		} else {
+			setNotifications([]);
 		}
 	}, [user?.email, isOpenAppointment]);
+
+	const handleCloseSnackbar = () => {
+		setOpenSnackbar(false);
+	};
 
 	const getOptionsDisabled = (option, timeSlotArray, doctorIndex) => {
 		const timeSlotIndex = timeSlotArray.findIndex(
@@ -64,30 +77,44 @@ function App() {
 		);
 		return availabilityMatrix[doctorIndex]?.[timeSlotIndex] === -1;
 	};
+
 	const handleAccept = async (notificationss) => {
-		console.log(notifications)
 		const id = notificationss._id;
-		console.log(notificationss);
+		setOpenSnackbar(true);
 		try {
 			const response = await axios.post(
 				`http://localhost:5001/api/notificationss/user/accepted/${id}`
 			);
-			console.log("Appointment accepted:", response.data);
-			setNotifications([]);
 			fetchNotifications();
-			console.log(notifications);
-			const email = notificationss.email
-			const doctorName = notificationss.message.substring((notificationss.message.indexOf("with ") + "with ".length),notificationss.message.indexOf(" on")).trim();
-			const time_start =notificationss.message.substring((notificationss.message.indexOf("on ") + "on ".length),notificationss.message.indexOf(" -")).trim();
-			const time_end =notificationss.message.substring((notificationss.message.indexOf("- ") + "- ".length),notificationss.message.indexOf("?")).trim();
+			const email = notificationss.email;
+			const doctorName = notificationss.message
+				.substring(
+					notificationss.message.indexOf("with ") + "with ".length,
+					notificationss.message.indexOf(" on")
+				)
+				.trim();
+			const time_start = notificationss.message
+				.substring(
+					notificationss.message.indexOf("on ") + "on ".length,
+					notificationss.message.indexOf(" -")
+				)
+				.trim();
+			const time_end = notificationss.message
+				.substring(
+					notificationss.message.indexOf("- ") + "- ".length,
+					notificationss.message.indexOf("?")
+				)
+				.trim();
 
 			const responses = await axios.post(`http://localhost:5001/api/history`, {
 				email,
 				doctorName,
 				time_start,
-				time_end
+				time_end,
 			});
-			
+
+			setSnackbarMessage("Appointment Accepted");
+			setSnackbarSeverity("succes");
 		} catch (error) {
 			console.error("Error accepting appointment:", error);
 		}
@@ -95,15 +122,14 @@ function App() {
 
 	const handleCancel = async (notificationss) => {
 		try {
+			setOpenSnackbar(true);
 			const id = notificationss._id;
-			console.log(id);
 			const response = await axios.post(
 				`http://localhost:5001/api/notificationss/user/canceled/${id}`
 			);
-			console.log("Appointment canceled:", response.data);
-			setNotifications([]);
 			fetchNotifications();
-			console.log(notifications);
+			setSnackbarMessage("Appointment Cancelled");
+			setSnackbarSeverity("succes");
 		} catch (error) {
 			console.error("Error canceling appointment:", error);
 		}
@@ -118,6 +144,10 @@ function App() {
 			addPatientData(user.email, doctorPref, timePref);
 			console.log("TimePref:", timePref);
 			console.log("DocPref:", doctorPref);
+		} else {
+			setOpenSnackbar(true);
+			setSnackbarMessage("You Already Submit an Appointment");
+			setSnackbarSeverity("error");
 		}
 	};
 	const addPatientData = (name, doctorPref, timePref) => {
@@ -146,7 +176,6 @@ function App() {
 	useEffect(() => {
 		if (!isOpenAppointment && allTimePreferences.length != 0) {
 			console.log("Send algorithm");
-			console.log("Patient data:", patientData);
 			const result = findBestCombination(patientData);
 			console.log(result.score);
 			console.log(result.combination);
@@ -177,7 +206,6 @@ function App() {
 					status: "pending",
 				}
 			);
-			console.log("Notification sent:", response.data);
 		} catch (error) {
 			console.error("Error sending notification:", error);
 		}
@@ -240,18 +268,25 @@ function App() {
 		if (user?.email) {
 			fetchNotifications();
 			joinRoom(user.email);
+
 			const handleNotificationReceived = (notification) => {
-				setNotifications((prev) => [...prev, notification]);
+				if (notification) {
+					setNotifications((prev) => [...prev, notification]);
+				} else {
+					console.error("Received notification is null or undefined");
+				}
 			};
+
 			onNotificationReceived(handleNotificationReceived);
+
 			return () => {
+				console.log("Cleaning up socket listeners");
 				disconnectSocket();
-				onNotificationReceived(null);
 			};
 		} else {
 			setNotifications([]);
 		}
-	}, [user?.email,isOpenAppointment]);
+	}, [user?.email, isOpenAppointment]);
 
 	const handleNotifButton = () => {
 		if (!showNotif) {
@@ -277,6 +312,20 @@ function App() {
 						onCancel={handleCancel}
 					/>
 				)}
+				<Snackbar
+					open={openSnackbar}
+					autoHideDuration={6000}
+					onClose={handleCloseSnackbar}
+					anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+				>
+					<Alert
+						onClose={handleCloseSnackbar}
+						severity={snackbarSeverity}
+						sx={{ width: "100%" }}
+					>
+						{snackbarMessage}
+					</Alert>
+				</Snackbar>
 				<Routes>
 					<Route path="/login" element={<Login />} />
 					<Route path="/register" element={<Register />} />
@@ -308,7 +357,7 @@ function App() {
 					<Route path="*" element={<NotFound />} />
 				</Routes>
 			</main>
-			<Footer  />
+			<Footer />
 		</Router>
 	);
 }

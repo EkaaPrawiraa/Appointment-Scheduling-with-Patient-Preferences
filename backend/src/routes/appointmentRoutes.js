@@ -107,7 +107,6 @@ router.get('/history', async (req, res) => {
  *         description: Server error
  */
 router.post('/history', async (req, res) => {
-    console.log(req.body);
     const { email, doctorName, time_start, time_end } = req.body;
 
     const appointment = new Appointment({

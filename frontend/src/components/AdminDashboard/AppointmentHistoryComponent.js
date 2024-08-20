@@ -17,7 +17,6 @@ const OpenHistory = ({ onClose }) => {
         };
 
         fetchAppointments();
-        console.log(appointments);
     }, []);
 
     return (

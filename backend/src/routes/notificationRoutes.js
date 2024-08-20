@@ -11,8 +11,6 @@ module.exports = function(io) {
                 notification.status = 'accepted';
                 await notification.save();
                 if (notification && notification.email) {
-                    console.log(notification._id);
-                    console.log(notification.email);
                     io.to(notification.email).emit('receiveNotification', notification);
                 } else {
                     console.error("Notification or email is missing");
@@ -34,8 +32,6 @@ module.exports = function(io) {
                 notification.status = 'cancelled';
                 await notification.save();
                 if (notification && notification.email) {
-                    console.log(notification._id);
-                    console.log(notification.email);
                     io.to(notification.email).emit('receiveNotification', notification);
                 } else {
                     console.error("Notification or email is missing");
