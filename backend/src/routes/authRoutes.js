@@ -49,6 +49,8 @@ const { body, validationResult } = require('express-validator');
  *       500:
  *         description: Server error
  */
+
+
 router.post('/login', async (req, res) => {
     const { email, password } = req.body;
     try {

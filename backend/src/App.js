@@ -16,7 +16,7 @@ const server = http.createServer(app);
 
 const io = socketIo(server, {
     cors: {
-        origin: 'https://appointment-scheduling-with-patient-preferences.vercel.app', 
+        origin: 'http://localhost:3000', 
         methods: ['GET', 'POST'],
         allowedHeaders: ['Content-Type', 'Authorization'], 
         credentials: true
@@ -24,7 +24,7 @@ const io = socketIo(server, {
 });
 
 const corsOptions = {
-    origin: 'https://appointment-scheduling-with-patient-preferences.vercel.app', 
+    origin: 'http://localhost:3000', 
     methods: ['GET', 'POST', 'PUT', 'DELETE'], 
     allowedHeaders: ['Content-Type', 'Authorization'], 
     credentials: true, 

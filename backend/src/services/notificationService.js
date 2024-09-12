@@ -3,7 +3,6 @@ const Notification = require('../models/Notification');
 const setupSocket = (io) => {
     io.on('connection', (socket) => {
         console.log('a user connected');
-
         socket.on('join', ({ userId }) => {
             socket.join(userId);
             console.log(`User with ID ${userId} joined their room`);

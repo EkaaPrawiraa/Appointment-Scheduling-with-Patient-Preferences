@@ -41,7 +41,6 @@ const Doctor = require('../models/Doctor');
  */
 router.post('/doctors/single', async (req, res) => {
     const { id_doctor, doctor_name } = req.body;
-
     try {
         const doctor = new Doctor({ id_doctor, doctor_name });
         const newDoctor = await doctor.save();
